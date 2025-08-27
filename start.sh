@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -e
 
-export FLASK_APP="app:create_app"
+export FLASK_APP=app:create_app
 
-# Apply DB migrations (safe if already up-to-date)
+# apply DB migrations at boot (ignore “already applied”)
 flask db upgrade || true
 
-# Start Gunicorn on Render’s port
-exec gunicorn -k gthread -w ${WORKERS:-2} -b 0.0.0.0:${PORT:-10000} "app:create_app()"
+# IMPORTANT: Docker on Render expects port 10000
+exec gunicorn -k gthread -w 2 -b 0.0.0.0:10000 "app:create_app()"
