@@ -71,3 +71,22 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
+import click
+
+@app.cli.command("create-admin-if-missing")
+@click.argument("username")
+@click.argument("password")
+def create_admin_if_missing(username, password):
+    """Create admin if it doesn't exist; otherwise just reset the password."""
+    from models import db, User
+    u = User.query.filter_by(username=username).first()
+    if u:
+        u.set_password(password)
+        db.session.commit()
+        print(f"Password reset for {username}")
+    else:
+        u = User(username=username)
+        u.set_password(password)
+        db.session.add(u)
+        db.session.commit()
+        print(f"Admin created: {username}")
