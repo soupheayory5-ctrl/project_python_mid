@@ -90,3 +90,20 @@ def create_admin_if_missing(username, password):
         db.session.add(u)
         db.session.commit()
         print(f"Admin created: {username}")
+# --- seed an admin from env on first boot (Render Free friendly) ---
+    admin_u = os.getenv("ADMIN_USERNAME")
+    admin_p = os.getenv("ADMIN_PASSWORD")
+    if admin_u and admin_p:
+        with app.app_context():
+            from sqlalchemy import text
+            # make sure DB is reachable
+            db.session.execute(text("SELECT 1"))
+            u = User.query.filter_by(username=admin_u).first()
+            if not u:
+                u = User(username=admin_u)
+                u.set_password(admin_p)
+                db.session.add(u)
+                db.session.commit()
+                app.logger.info(f"Seeded admin user: {admin_u}")
+            else:
+                app.logger.info(f"Admin user already exists: {admin_u}")
