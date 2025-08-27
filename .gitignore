@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual env
+.venv/
+venv/
+
+# Environment variables (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# SQLite / instance data
+store.db
+instance/
+
+# Flask-Migrate caches (keep migrations themselves!)
+migrations/**/__pycache__/
+
+# User uploads (payment slips, etc.)
+static/payments/*
+!static/payments/.gitkeep
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# IDE / editors
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

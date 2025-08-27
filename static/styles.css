@@ -1,0 +1,48 @@
+/* Brand Logo */
+.navbar .container a.navbar-brand {
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    color: #2C3E50;
+}
+.navbar .container a.navbar-brand:hover {
+    color: #0d6efd;
+    transform: scale(1.1);
+}
+
+/* Navigation Links */
+.navbar .container #mainNavbar ul.navbar-nav li a {
+    margin: 0 12px;
+    padding: 6px 10px;
+    transition: all 0.3s ease-in-out;
+    color: #2C3E50;
+    font-weight: 500;
+}
+.navbar .container #mainNavbar ul.navbar-nav li a:hover {
+    color: #0d6efd;
+    transform: translateY(-3px);
+    border-bottom: 2px solid #0d6efd;
+}
+
+/* Cart Button */
+.navbar .container div .btn_cart {
+    background-color: #0d6efd;
+    color: #fff;
+    transition: all 0.3s ease;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+.navbar .container div .btn_cart i {
+    color: #fff;
+    margin-right: 5px;
+}
+.navbar .container div .btn_cart span {
+    color: #f0f0f0;
+}
+.navbar .container div .btn_cart:hover {
+    background-color: #0b5ed7;
+    transform: translate(-2px, -2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

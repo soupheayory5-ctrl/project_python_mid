@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style> body {
+      background: #e9ecef;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #212529;
+    }
+    .checkout-container {
+      max-width: 960px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .checkout-left, .checkout-right {
+      padding: 30px 40px;
+      flex: 1 1 400px;
+    }
+    .checkout-left {
+      border-right: 2px solid #f1f1f1;
+    }
+    h2 {
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #4a4a4a;
+    }
+    h4 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #5a5a5a;
+    }
+    label {
+      font-weight: 600;
+      color: #555;
+    }
+    input, textarea {
+      border-radius: 8px;
+      border: 1.5px solid #ccc;
+      padding: 10px 15px;
+      width: 100%;
+      margin-bottom: 20px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus, textarea:focus {
+      border-color: #6f42c1;
+      outline: none;
+      box-shadow: 0 0 8px rgba(111, 66, 193, 0.3);
+    }
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    .radio-label {
+      flex: 1;
+      padding: 15px 10px;
+      border: 1.8px solid #ccc;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+    }
+    .radio-label i {
+      margin-right: 8px;
+      font-size: 18px;
+      vertical-align: middle;
+    }
+    input[type="radio"] {
+      display: none;
+    }
+    input[type="radio"]:checked + .radio-label {
+      background-color: #6f42c1;
+      border-color: #6f42c1;
+      color: white;
+      box-shadow: 0 5px 15px rgba(111,66,193,0.4);
+    }
+    .order-summary {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: inset 0 0 15px #e1d8f9;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .order-summary h4 {
+      margin-bottom: 15px;
+    }
+    .order-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 25px;
+    }
+    .order-list li {
+      list-style: none;
+      padding: 12px 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .order-list li:last-child {
+      border-bottom: none;
+    }
+    .total-amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #198754;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .btn-checkout {
+      background-color: #6f42c1;
+      border: none;
+      width: 100%;
+      padding: 16px;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn-checkout:hover {
+      background-color: #563d7c;
+      box-shadow: 0 6px 20px rgba(86, 61, 124, 0.5);
+    }
+    @media (max-width: 768px) {
+      .checkout-container {
+        flex-direction: column;
+      }
+      .checkout-left {
+        border-right: none;
+        border-bottom: 2px solid #f1f1f1;
+        padding-bottom: 40px;
+      }
+      .checkout-right {
+        padding-top: 40px;
+      }
+    }</style>
+</head>
+<body>
+  {% include 'layout/navbar.html' %}
+
+  <div id="app">
+    <div class="checkout-container">
+      <div class="checkout-left">
+        <h2>🛒 Checkout</h2>
+        <form @submit.prevent="placeOrder">
+          <h4>Contact Information</h4>
+          <input v-model="form.firstname" type="text" placeholder="First Name" required />
+          <input v-model="form.lastname" type="text" placeholder="Last Name" required />
+          <input v-model="form.number" type="tel" placeholder="Phone Number" required />
+          <input v-model="form.email" type="email" placeholder="Email Address" required />
+
+          <h4>Delivery Method</h4>
+          <div class="radio-group">
+            <input v-model="form.delivery" type="radio" value="store" id="delivery-store" @change="updatePaymentOptions" hidden />
+              <label :for="'delivery-store'" :class="['radio-label', form.delivery === 'store' ? 'active' : '']">
+                  <i class="fa-solid fa-store"></i> Store Pickup
+              </label>
+
+            <input v-model="form.delivery" type="radio" value="delivery" id="delivery-delivery" hidden @change="updatePaymentOptions" />
+              <label :for="'delivery-delivery'" :class="['radio-label', form.delivery === 'delivery' ? 'active' : '']">
+                  <i class="fa-solid fa-truck"></i> Home Delivery
+              </label>
+          </div>
+
+          <textarea v-model="form.address" rows="3" placeholder="Shipping Address or Map Link" required @input="updatePaymentOptions"></textarea>
+
+          <h4>Payment Method</h4>
+          <div class="radio-group">
+            <input v-model="form.payment" type="radio" value="cash" id="payment-cash" :disabled="!allowCash" hidden />
+              <label :for="'payment-cash'" :class="['radio-label', form.payment === 'cash' ? 'active' : '']">Cash</label>
+              <input v-model="form.payment" type="radio" value="KHQR" id="payment-khqr" :disabled="!allowKHQR" hidden />
+              <label :for="'payment-khqr'" :class="['radio-label', form.payment === 'KHQR' ? 'active' : '']">KHQR</label>
+              <input v-model="form.payment" type="radio" value="Cards" id="payment-cards" :disabled="!allowCards" hidden />
+              <label :for="'payment-cards'" :class="['radio-label', form.payment === 'Cards' ? 'active' : '']">Cards</label>
+
+          </div>
+
+
+
+          <button type="submit" class="btn-checkout" :disabled="!validCheckout">Place Order</button>
+        </form>
+      </div>
+
+      <div class="checkout-right">
+        <div class="order-summary">
+          <h4>🛍 Order Summary</h4>
+          {% raw %}
+<ul class="order-list">
+  <li v-for="item in displayCart" :key="item.id">
+    <span>{{ item.title }} (x{{ item.quantity }})</span>
+    <strong>${{ (item.price * item.quantity).toFixed(2) }}</strong>
+  </li>
+</ul>
+<div class="total-amount">${{ totalAmount.toFixed(2) }}</div>
+{% endraw %}
+
+            {% raw %}
+                <div class="total-amount">${{ totalAmount.toFixed(2) }}</div>
+            {% endraw %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'layout/footer.html' %}
+
+  <script>
+  // Helper to read/write the compact cart (id + quantity)
+  function readCart() {
+    const raw = JSON.parse(localStorage.getItem('cart_list') || '[]');
+    // tolerate legacy carts that had price/title fields
+    return raw.map(x => ({ id: Number(x.id), quantity: Number(x.quantity || 1) }))
+              .filter(x => Number.isFinite(x.id) && x.id > 0 && x.quantity > 0);
+  }
+  function writeCart(cart) {
+    localStorage.setItem('cart_list', JSON.stringify(cart));
+  }
+
+  const app = Vue.createApp({
+    data() {
+      return {
+        cart: [],              // [{id, quantity}]
+        productsById: {},      // { id: productFromDB }
+        form: {
+          firstname: '',
+          lastname: '',
+          email: '',
+          number: '',
+          delivery: 'store',
+          address: '',
+          payment: 'cash',
+        },
+      };
+    },
+
+    computed: {
+      // Merge DB data with quantities for rendering
+      displayCart() {
+        return this.cart
+          .map(item => {
+            const p = this.productsById[item.id];
+            if (!p) return null; // product deleted in DB
+            return { ...p, quantity: item.quantity };
+          })
+          .filter(Boolean);
+      },
+      totalAmount() {
+        return this.displayCart.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
+      },
+      allowCash() {
+        return this.form.delivery === 'store' ||
+               (this.form.delivery === 'delivery' && (this.form.address || '').toLowerCase().includes('phnom penh'));
+      },
+      allowKHQR() { return true; },
+      allowCards() { return true; },
+      validCheckout() {
+        if (this.form.delivery === 'delivery' && this.form.payment === 'cash' && !this.allowCash) return false;
+        return true;
+      }
+    },
+
+    methods: {
+      async fetchProductsByIds(ids) {
+        if (!ids.length) { this.productsById = {}; return; }
+        const res = await axios.post('/api/products/by_ids', { ids });
+        this.productsById = res.data || {};
+        // Clean cart if some ids no longer exist in DB
+        const existingIds = new Set(Object.keys(this.productsById).map(Number));
+        const cleaned = this.cart.filter(i => existingIds.has(i.id));
+        if (cleaned.length !== this.cart.length) {
+          this.cart = cleaned;
+          writeCart(cleaned);
+        }
+      },
+      async refreshCart() {
+        this.cart = readCart();
+        const ids = [...new Set(this.cart.map(i => i.id))];
+        await this.fetchProductsByIds(ids);
+      },
+
+      updatePaymentOptions() {
+        if (this.form.delivery === 'delivery' && this.form.payment === 'cash' && !this.allowCash) {
+          this.form.payment = 'KHQR';
+        }
+      },
+
+      changeQuantity(id, delta) {
+        const it = this.cart.find(i => i.id === id);
+        if (it) {
+          it.quantity += delta;
+          if (it.quantity < 1) it.quantity = 1;
+          writeCart(this.cart);
+          // No re-fetch needed; prices come from productsById already loaded
+        }
+      },
+      removeItem(id) {
+        this.cart = this.cart.filter(i => i.id !== id);
+        writeCart(this.cart);
+      },
+
+      async placeOrder() {
+        // Build items from DB data + quantities for accuracy
+        const items = this.displayCart.map(i => ({
+          id: i.id,
+          title: i.title,
+          price: Number(i.price) || 0,
+          image: i.image || '',
+          quantity: i.quantity
+        }));
+
+        // No items? bail out
+        if (!items.length) {
+          Swal.fire('Cart is empty', 'Please add items before checkout.', 'info');
+          return;
+        }
+
+        const payloadCustomer = {
+          fullName: `${this.form.firstname} ${this.form.lastname}`.trim(),
+          email: this.form.email,
+          number: this.form.number,
+          address: this.form.address,
+          totalAmount: this.totalAmount,
+          payment: this.form.payment,
+          deliveryMethod: this.form.delivery === 'store' ? 'Store Pickup' : 'Home Delivery',
+          payMethod: this.form.payment,
+        };
+
+        if (this.form.payment === 'KHQR') {
+          Swal.fire({
+            title: 'Scan to Pay via Bakong',
+            html: `
+              <img src="/static/images/khqr.png" alt="KHQR" style="width: 250px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2)" />
+              <p class="mt-3">Please scan this QR code using your Bakong-supported app and upload your payment slip.</p>
+              <input type="file" id="paymentSlip" class="form-control mt-2" accept="image/*" />
+            `,
+            confirmButtonText: 'I Paid',
+            preConfirm: () => {
+              const file = document.getElementById('paymentSlip').files[0];
+              if (!file) {
+                Swal.showValidationMessage('Please upload your payment slip');
+                return false;
+              }
+              const formData = new FormData();
+              formData.append('slip', file);
+              formData.append('payload', JSON.stringify({
+                customer: { ...payloadCustomer, isPaid: false },
+                items
+              }));
+              return axios.post('/confirmKHQR', formData)
+                .then(() => {
+                  Swal.fire('Thank you!', 'Your payment is under review.', 'success');
+                  localStorage.removeItem('cart_list');
+                  window.location.href = '/product';
+                })
+                .catch(() => {
+                  Swal.fire('Error', 'Something went wrong.', 'error');
+                });
+            }
+          });
+          return;
+        }
+
+        // Non-KHQR flow: send Telegram + Email
+        const payload = {
+          customer: { ...payloadCustomer, isPaid: true },
+          items
+        };
+
+        axios.post('/messageToTelegram', payload).catch(err => console.error('❌ Telegram:', err));
+        axios.post('/sendEmail', payload).catch(err => console.error('❌ Email:', err));
+
+        localStorage.removeItem('cart_list');
+        Swal.fire({
+          icon: 'success',
+          title: 'Order Placed!',
+          text: 'Your order has been successfully placed.',
+          confirmButtonColor: '#6f42c1',
+        }).then(() => {
+          window.location.href = '/product';
+        });
+      }
+    },
+
+    async mounted() {
+      await this.refreshCart();
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>

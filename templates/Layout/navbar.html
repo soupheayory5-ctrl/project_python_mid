@@ -1,0 +1,45 @@
+<!-- templates/Layout/navbar.html -->
+<nav class="navbar navbar-expand-lg shadow-sm" style="background-color: rgba(132,157,220,0.54);">
+  <div class="container py-2">
+    <a class="navbar-brand fw-bold fs-3 text-dark" href="/">SUSetec Store</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/product">Products</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/contact">Contact</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="{{ url_for('auth.login') }}">Login</a></li>
+        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="{{ url_for('auth.logout') }}">Logout</a></li>
+      </ul>
+
+      <div class="d-flex">
+        <a href="/cart" class="btn btn_cart">
+          <i class="fa-solid fa-cart-plus me-1"></i>
+          Cart (<span data-cart-count>0</span>)
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+(function () {
+  function getCount() {
+    try { return (JSON.parse(localStorage.getItem('cart_list') || '[]')
+      .reduce((t,i)=>t+(i.quantity||0),0)); } catch { return 0; }
+  }
+  function render() {
+    const el = document.querySelector('[data-cart-count]');
+    if (el) el.textContent = getCount();
+  }
+  window.updateCartBadge = render;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render); else render();
+  window.addEventListener('cart-changed', render);
+  window.addEventListener('storage', e => { if (e.key === 'cart_list') render(); });
+})();
+</script>
