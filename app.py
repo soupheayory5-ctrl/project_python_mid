@@ -8,6 +8,10 @@ from models import db, User
 from routes import register_blueprints
 from mail_config import mail  # mail = Mail() in mail_config.py
 
+import os
+from sqlalchemy import text
+from models import db, User
+
 load_dotenv()
 
 login_manager = LoginManager()
@@ -61,6 +65,27 @@ def create_app():
 
     # blueprints
     register_blueprints(app)
+
+    # --- Seed an admin from env on first boot ---
+    admin_u = os.getenv("ADMIN_USERNAME")
+    admin_p = os.getenv("ADMIN_PASSWORD")
+    if admin_u and admin_p:
+        with app.app_context():
+            # ensure DB is reachable (and migrations have run)
+            db.session.execute(text("SELECT 1"))
+            u = User.query.filter_by(username=admin_u).first()
+            if not u:
+                u = User(username=admin_u)
+                u.set_password(admin_p)
+                db.session.add(u)
+                db.session.commit()
+                app.logger.info(f"Seeded admin user: {admin_u}")
+            else:
+                app.logger.info(f"Admin user already exists: {admin_u}")
+
+
+
+
     return app
 
 @login_manager.user_loader
