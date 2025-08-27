@@ -1,0 +1,28 @@
+# render.yaml
+services:
+  - type: web
+    name: susetec-store                # pick a unique name
+    env: docker
+    plan: free                         # you can upgrade later
+    autoDeploy: true
+    disk:
+      name: sqlite-disk
+      mountPath: /var/data             # where SQLite will live
+      sizeGB: 1
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false                    # you fill it in the dashboard later
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:////var/data/store.db
