@@ -29,15 +29,14 @@ def create_app():
 
     # app.py (inside create_app)
     # app.py (only the DB URI part shown)
+    db_path = os.path.join(app.root_path, "store.db")
+
     db_url = os.getenv("DATABASE_URL")
-    if db_url:
-        # Render sometimes gives postgres://, SQLAlchemy wants postgresql://
-        if db_url.startswith("postgres://"):
-            db_url = db_url.replace("postgres://", "postgresql://", 1)
-        app.config["SQLALCHEMY_DATABASE_URI"] = db_url
-    else:
-        db_path = os.path.join(app.root_path, "store.db")
-        app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+    if db_url and db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or f"sqlite:///{db_path}"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # --- Mail (from .env) ---
     mail_username = os.getenv("MAIL_USERNAME")
