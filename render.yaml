@@ -1,17 +1,15 @@
-# render.yaml
 services:
   - type: web
-    name: susetec-store                # pick a unique name
+    name: susetec-store
     env: docker
-    plan: free                         # you can upgrade later
+    plan: free
     autoDeploy: true
-    disk:
-      name: sqlite-disk
-      mountPath: /var/data             # where SQLite will live
-      sizeGB: 1
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: FLASK_ENV
         value: production
+      - key: FLASK_APP
+        value: app:create_app
       - key: SECRET_KEY
         generateValue: true
       - key: MAIL_SERVER
@@ -19,10 +17,20 @@ services:
       - key: MAIL_PORT
         value: 587
       - key: MAIL_USERNAME
-        sync: false                    # you fill it in the dashboard later
+        sync: false
       - key: MAIL_PASSWORD
         sync: false
       - key: MAIL_DEFAULT_SENDER
         sync: false
+      # Inject the managed Postgres connection string
       - key: DATABASE_URL
-        value: sqlite:////var/data/store.db
+        fromDatabase:
+          name: store-db
+          property: connectionString
+    healthCheckPath: /
+
+databases:
+  - name: store-db
+    plan: free
+    databaseName: susetec
+    user: susetec
