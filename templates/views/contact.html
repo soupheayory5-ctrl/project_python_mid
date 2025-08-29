@@ -3,94 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact Us - BlueWave Store</title>
+  <title>Contact Us - SUSetec Store</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
   <style>
+    /* ===== Global background with pattern ===== */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #f0f5ff, #dbeafe);
       margin: 0;
-      color: #1f2937;
-      padding-bottom: 80px;
+      color: #0f172a;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(99,102,241,.12), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(16,185,129,.12), transparent 40%),
+        repeating-linear-gradient(135deg, #f0f9ff 0 18px, #e0f2fe 18px 36px),
+        linear-gradient(180deg,#ffffff,#f8fafc);
+      padding-bottom: 100px;
     }
 
+    /* ===== Header Banner ===== */
     .header-banner {
-      background: linear-gradient(to bottom right, #1d4ed8, #60a5fa);
+      background:
+        repeating-linear-gradient(45deg, rgba(59,130,246,.15) 0 20px, rgba(59,130,246,0) 20px 40px),
+        linear-gradient(135deg,#2563eb,#60a5fa);
       color: white;
-      padding: 100px 20px 80px;
+      padding: 90px 20px 70px;
       text-align: center;
-      border-radius: 0 0 80px 80px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      border-radius: 0 0 60px 60px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       margin-bottom: 60px;
     }
     .header-banner h1 {
       font-weight: 800;
-      font-size: 3.5rem;
-      margin-bottom: 12px;
+      font-size: 3rem;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
     }
     .header-banner p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      max-width: 600px;
+      font-size: 1.1rem;
+      opacity: 0.95;
+      max-width: 620px;
       margin: 0 auto;
     }
 
+    /* ===== Main Container ===== */
     .container-contact {
-      max-width: 1140px;
+      max-width: 1200px;
       margin: auto;
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+      border-radius: 24px;
       overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      background: white;
     }
 
+    /* ===== Form side ===== */
     .contact-form {
       padding: 50px 40px;
+      background:
+        repeating-linear-gradient(-45deg, rgba(37,99,235,.05) 0 25px, transparent 25px 50px),
+        #ffffff;
     }
-
     .form-floating .form-control {
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 1.2rem;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      background-color: #f9fafb;
     }
     .form-floating label {
       font-weight: 600;
-      color: #374151;
+      color: #334155;
     }
 
     .btn-submit {
-      margin-top: 30px;
-      background-color: #2563eb;
-      color: white;
-      padding: 14px;
-      font-weight: bold;
-      border-radius: 12px;
+      margin-top: 28px;
       border: none;
+      border-radius: 14px;
+      padding: 14px;
       width: 100%;
+      font-weight: 700;
       text-transform: uppercase;
-      box-shadow: 0 6px 16px rgba(37,99,235,0.4);
-      transition: all 0.3s ease;
+      color: #fff;
+      background:
+        repeating-linear-gradient(135deg, #34d399 0 15px, #10b981 15px 30px);
+      transition: transform .2s ease, filter .2s ease;
     }
     .btn-submit:hover {
-      background-color: #1e40af;
+      transform: translateY(-2px);
+      filter: brightness(1.1);
     }
 
+    /* ===== Info side ===== */
     .contact-info {
-      background: #f0f4ff;
+      background:
+        repeating-linear-gradient(135deg, #dbeafe 0 25px, #bfdbfe 25px 50px),
+        linear-gradient(#dbeafe,#93c5fd);
       padding: 50px 40px;
+      color: #1e3a8a;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      border-left: 3px solid #3b82f6;
     }
     .contact-info h4 {
-      font-size: 1.8rem;
-      margin-bottom: 30px;
-      font-weight: 700;
-      color: #1e3a8a;
+      font-size: 1.6rem;
+      margin-bottom: 24px;
+      font-weight: 800;
     }
     .contact-info ul {
       list-style: none;
@@ -100,28 +119,29 @@
       display: flex;
       align-items: center;
       margin-bottom: 18px;
-      font-size: 1.1rem;
-      color: #1e3a8a;
+      font-size: 1rem;
     }
     .contact-info li i {
       margin-right: 12px;
-      font-size: 1.5rem;
-      color: #2563eb;
+      font-size: 1.4rem;
+      color: #1e40af;
     }
     .contact-info a {
-      color: #1e40af;
+      color: #1e3a8a;
+      font-weight: 600;
       text-decoration: none;
     }
     .contact-info a:hover {
       text-decoration: underline;
     }
 
-    @media (max-width: 768px) {
-      .header-banner h1 {
-        font-size: 2.5rem;
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .container-contact {
+        grid-template-columns: 1fr;
       }
-      .contact-form, .contact-info {
-        padding: 30px 20px;
+      .contact-info {
+        border-top: 4px solid #2563eb;
       }
     }
   </style>
@@ -131,18 +151,18 @@
   {% include 'Layout/navbar.html' %}
 
   <section class="header-banner">
-    <h1>Contact SUSetec Store</h1>
-    <p>Have questions or feedback? We're here to help.</p>
+    <h1>Contact us</h1>
+    <p> We're here to help you.</p>
   </section>
 
   <main class="container-contact">
-
+    <!-- Contact Form -->
     <section class="contact-form">
       <form method="post" action="/contact" novalidate>
         <div class="row g-4">
           <div class="col-md-6 form-floating">
             <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required />
-            <label for="name">Annvireak Devin *</label>
+            <label for="name">Soul.kh *</label>
           </div>
           <div class="col-md-6 form-floating">
             <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required />
@@ -169,12 +189,13 @@
       </form>
     </section>
 
+    <!-- Contact Info -->
     <aside class="contact-info">
       <h4>Get in Touch</h4>
       <ul>
-        <li><i class="bi bi-envelope-fill"></i><a href="mailto:contact@bluewavestore.com">contact@SUSetec.com</a></li>
-        <li><i class="bi bi-telephone-fill"></i> +855 010 989 898</li>
-        <li><i class="bi bi-geo-alt-fill"></i> 789 Ocean Blvd, Phnom Penh, Cambodia</li>
+        <li><i class="bi bi-envelope-fill"></i><a href="mailto:contact@SUSetec.com">soulkh@gmail.com</a></li>
+        <li><i class="bi bi-telephone-fill"></i> +855 010 200 888</li>
+        <li><i class="bi bi-geo-alt-fill"></i> 789 60m Blvd,Aeon mall Mean Chey, Phnom Penh, Cambodia</li>
         <li><i class="bi bi-facebook"></i><a href="https://facebook.com/SUSetec" target="_blank">Facebook</a></li>
         <li><i class="bi bi-twitter"></i><a href="https://twitter.com/SUSetec" target="_blank">Twitter</a></li>
         <li><i class="bi bi-instagram"></i><a href="https://instagram.com/SUSetec" target="_blank">Instagram</a></li>
@@ -189,4 +210,3 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -3,20 +3,140 @@
 {% block title %}Admin · Products{% endblock %}
 
 {% block content %}
-<div class="d-flex align-items-center justify-content-between mb-3">
-  <h1 class="h3 mb-0">Products</h1>
+<style>
+  /* ===== Patterned Background ===== */
+  body {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(59,130,246,.12) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(16,185,129,.12) 0, transparent 40%),
+      repeating-linear-gradient(135deg, #fdf2f8 0 24px, #fce7f3 24px 48px),
+      linear-gradient(180deg,#ffffff,#f9fafb);
+  }
+
+  /* ===== Page Header ===== */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 8px 6px;
+    position: relative;
+    z-index: 3;             /* always above patterned containers/nav shadows */
+  }
+  .page-header h1 {
+    font-weight: 800;
+    font-size: 1.6rem;
+    background: linear-gradient(90deg,#2563eb,#ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0;
+  }
+
+  /* ===== Top-right action bar (failsafe duplicate Add button) ===== */
+  .action-bar {
+    position: sticky;       /* sticks under the navbar */
+    top: 64px;              /* adjust if navbar is taller/shorter */
+    z-index: 4;
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    padding: .25rem 0 .5rem 0;
+  }
+
+  /* ===== Buttons ===== */
+  .btn-primary {
+    font-weight: 700;
+    border-radius: 10px;
+    background:
+      repeating-linear-gradient(45deg,#3b82f6 0 20px,#2563eb 20px 40px);
+    border: none;
+    transition: transform .2s ease, filter .2s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+  .btn-outline-secondary {
+    border-radius: 10px;
+    font-weight: 600;
+  }
+
+  /* ===== Card/Table ===== */
+  .card-table {
+    border-radius: 16px;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(-45deg, rgba(99,102,241,.06) 0 22px, transparent 22px 44px),
+      #fff;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 8px 20px rgba(15,23,42,.08);
+  }
+  .table thead {
+    background: linear-gradient(90deg,#f1f5f9,#e2e8f0);
+    font-weight: 600;
+    color: #334155;
+  }
+  .table tbody tr:hover {
+    background: rgba(219,234,254,.4);
+    transition: background .2s ease;
+  }
+
+  /* ===== Pagination ===== */
+  .pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    color: #2563eb;
+    font-weight: 500;
+  }
+  .pagination .active .page-link {
+    background: linear-gradient(90deg,#3b82f6,#2563eb);
+    border-color: #2563eb;
+    color: #fff;
+  }
+
+  .alert {
+    border-radius: 12px;
+    font-weight: 500;
+  }
+
+  /* ===== Floating Action Button (mobile safety) ===== */
+  .fab-add {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 5;
+    border-radius: 9999px;
+    padding: 12px 18px;
+    box-shadow: 0 10px 24px rgba(37,99,235,.35);
+    display: none;          /* hidden on large screens */
+  }
+  @media (max-width: 768px) {
+    .fab-add { display: inline-flex; align-items: center; gap: .4rem; }
+  }
+</style>
+
+<!-- Primary header with Add -->
+<div class="page-header">
+  <h1>📦 Products</h1>
   <div class="d-flex gap-2">
     <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">Dashboard</a>
     <a href="{{ url_for('admin.products_create') }}" class="btn btn-primary">+ New</a>
   </div>
 </div>
 
+<!-- Sticky top-right action bar (duplicate Add just in case header is overlapped) -->
+<div class="action-bar">
+  <a href="{{ url_for('admin.products_create') }}" class="btn btn-primary">+ New</a>
+</div>
+
+<!-- Search -->
 <form method="get" class="row g-2 mb-3">
   <div class="col-sm-8 col-md-6">
     <input
       name="q"
       class="form-control"
-      placeholder="Search title/category"
+      placeholder="🔎 Search title/category"
       value="{{ q|default('')|e }}"
     >
   </div>
@@ -30,7 +150,7 @@
   {% endif %}
 </form>
 
-{# flash messages #}
+{# Flash messages #}
 {% with msgs = get_flashed_messages(with_categories=true) %}
   {% if msgs %}
     {% for cat, msg in msgs %}
@@ -42,10 +162,11 @@
   {% endif %}
 {% endwith %}
 
-<div class="card shadow-sm">
+<!-- Table -->
+<div class="card-table shadow-sm">
   <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle mb-0">
-      <thead class="table-light">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
         <tr>
           <th style="width:80px">ID</th>
           <th>Title</th>
@@ -87,14 +208,13 @@
 
 {% if pagination.pages > 1 %}
 <nav aria-label="Products pagination" class="mt-3">
-  <ul class="pagination mb-0">
+  <ul class="pagination mb-0 justify-content-center">
     <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
       <a class="page-link"
          href="{{ url_for('admin.products_index', page=pagination.prev_num, q=q) }}"
          tabindex="-1">« Prev</a>
     </li>
 
-    {# show numbered pages with ellipses #}
     {% for page in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
       {% if page %}
         <li class="page-item {% if page == pagination.page %}active{% endif %}">
@@ -112,5 +232,8 @@
   </ul>
 </nav>
 {% endif %}
-{% endblock %}
 
+<!-- Floating Add button (visible on small screens) -->
+<a href="{{ url_for('admin.products_create') }}" class="btn btn-primary fab-add">+ New</a>
+
+{% endblock %}

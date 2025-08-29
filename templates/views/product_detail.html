@@ -13,18 +13,99 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
+    /* ===== Background Pattern ===== */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(59,130,246,.12) 0, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(236,72,153,.12) 0, transparent 35%),
+        repeating-linear-gradient(45deg, #f0f9ff 0 10px, #e0f2fe 10px 20px),
+        linear-gradient(180deg,#ffffff,#f8fafc);
+      color: #0f172a;
+    }
+
+    /* ===== Product Image ===== */
     .product-image {
       max-width: 100%;
       max-height: 400px;
       object-fit: contain;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 18px;
+      padding: 1rem;
+      background:
+        repeating-linear-gradient(135deg, #fafafa 0 20px, #f3f4f6 20px 40px),
+        linear-gradient(#ffffff,#f9fafb);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     }
-    .price { font-weight: 700; font-size: 1.8rem; }
+
+    /* ===== Reorder sections visually ===== */
+    h2 { order: 1; font-weight: 800; }
+    .price { order: 2; font-size: 1.9rem; font-weight: 900; }
+    .rating-badge { order: 3; }
+    .text-muted.fst-italic { order: 4; }
+    p { order: 5; }
+
+    /* ===== Price Badge ===== */
+    .price {
+      display:inline-block;
+      padding: .4rem 1rem;
+      border-radius: 12px;
+      color:#1f2937;
+      background:
+        linear-gradient(#fff,#fff) padding-box,
+        linear-gradient(90deg,#facc15,#fb7185) border-box;
+      border:2px solid transparent;
+    }
+
+    /* ===== Rating Badge ===== */
     .rating-badge {
-      font-size: 1rem; font-weight: 600; padding: 0.4em 0.7em; border-radius: 0.4rem;
+      background: linear-gradient(90deg,#fde68a,#fbbf24);
+      color: #78350f;
+      border: 1px solid rgba(120,53,15,.3);
+      font-size: 1rem;
+      font-weight: 700;
     }
-    .btn-back, .btn-add-cart { min-width: 140px; }
+
+    /* ===== Buttons ===== */
+    .btn-back {
+      border-radius: 999px;
+      font-weight: 700;
+      background:
+        linear-gradient(#fff,#fff) padding-box,
+        linear-gradient(90deg,#60a5fa,#a78bfa) border-box;
+      border: 2px solid transparent;
+      color:#1e293b;
+      transition: transform .2s ease;
+    }
+    .btn-back:hover {
+      transform: translateY(-2px);
+      color:#111827;
+    }
+
+    .btn-add-cart {
+      border:none;
+      border-radius: 14px;
+      font-weight: 700;
+      color:#fff;
+      background:
+        repeating-linear-gradient(45deg, #34d399 0 12px, #10b981 12px 24px);
+      padding:.6rem 1.6rem;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .btn-add-cart:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    /* ===== Detail Container ===== */
+    .detail-container {
+      margin: 90px auto;
+      padding: 2rem;
+      border-radius: 18px;
+      background:
+        repeating-linear-gradient(-45deg, rgba(59,130,246,.05) 0 20px, transparent 20px 40px),
+        #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    }
   </style>
 </head>
 <body>
@@ -32,19 +113,21 @@
     {% include 'Layout/navbar.html' %}
 
     <!-- Product Detail Section -->
-    <div class="container" style="margin: 100px auto;">
-      <div class="row g-4">
+    <div class="container detail-container">
+      <div class="row g-4 align-items-center">
+        <!-- Image Left -->
         <div class="col-12 col-md-6 text-center">
           <img :src="product.image" :alt="product.title" class="product-image" />
         </div>
 
-        <div class="col-12 col-md-6">
-          <h2 class="mb-2">{{ product.title }}</h2>
+        <!-- Info Right -->
+        <div class="col-12 col-md-6 d-flex flex-column gap-3">
+          <h2>{{ product.title }}</h2>
           <p class="text-muted fst-italic">{{ product.category }}</p>
-          <h4 class="text-success price mb-3">${{ product.price }}</h4>
+          <h4 class="price">${{ product.price }}</h4>
 
-          <div class="mb-3">
-            <span class="badge bg-warning text-dark rating-badge">
+          <div>
+            <span class="badge rating-badge">
               <i class="bi bi-star-fill me-1"></i> {{ product.rating.rate }}
             </span>
             <small class="text-muted">({{ product.rating.count }} reviews)</small>
@@ -52,11 +135,11 @@
 
           <p>{{ product.description }}</p>
 
-          <div class="d-flex gap-3 mt-4">
-            <a href="/product" class="btn btn-outline-secondary btn-back">
+          <div class="d-flex gap-3 mt-3">
+            <a href="/product" class="btn btn-back">
               <i class="bi bi-arrow-left-circle me-2"></i> Back to Products
             </a>
-            <button class="btn btn-success btn-add-cart" @click="addToCart(product)">
+            <button class="btn btn-add-cart" @click="addToCart(product)">
               <i class="bi bi-cart-plus me-2"></i> Add to Cart
             </button>
           </div>
@@ -69,13 +152,11 @@
 
   <!-- Scripts -->
   <script>
-    // Server passes the product from SQLite already shaped like FakeStore
     const productData = {{ product|tojson|safe }};
 
-    // Helpers so cart only stores {id, quantity}
     function readCart() {
       const raw = JSON.parse(localStorage.getItem('cart_list') || '[]');
-      return raw.map(x => ({ id: Number(x.id), quantity: Number(x.quantity || 1) }))
+      return raw.map(x => ({ id:+x.id, quantity:+(x.quantity||1) }))
                 .filter(x => Number.isFinite(x.id) && x.id > 0 && x.quantity > 0);
     }
     function writeCart(cart) {
@@ -84,39 +165,25 @@
 
     const app = Vue.createApp({
       data() {
-        return {
-          product: productData,
-          cart: [],
-          cartCount: 0
-        };
+        return { product: productData, cart: [], cartCount: 0 };
       },
-      mounted() {
-        this.loadCart();
-      },
+      mounted() { this.loadCart(); },
       methods: {
         loadCart() {
           this.cart = readCart();
           this.updateCartCount();
         },
-        addToCart(product) {
-          // Only keep id + quantity in localStorage (prices/titles come from DB later)
+        addToCart(item) {
           let cart_list = JSON.parse(localStorage.getItem('cart_list') || '[]');
-  const i = cart_list.findIndex(p => p.id === item.id);
-  if (i !== -1) cart_list[i].quantity += 1;
-  else cart_list.push({ id: item.id, title: item.title, price: +item.price || 0, image: item.image || '', quantity: 1 });
-
-  localStorage.setItem('cart_list', JSON.stringify(cart_list));
-  window.dispatchEvent(new Event('cart-changed'));
-
-          Swal.fire({
-            icon: 'success',
-            title: `"${product.title}" added to cart!`,
-            showConfirmButton: false,
-            timer: 1500
-          });
+          const i = cart_list.findIndex(p => p.id === item.id);
+          if (i !== -1) cart_list[i].quantity += 1;
+          else cart_list.push({ id:item.id, title:item.title, price:+item.price||0, image:item.image||'', quantity:1 });
+          localStorage.setItem('cart_list', JSON.stringify(cart_list));
+          window.dispatchEvent(new Event('cart-changed'));
+          Swal.fire({ icon:'success', title:`"${item.title}" added to cart!`, showConfirmButton:false, timer:1500 });
         },
         updateCartCount() {
-          this.cartCount = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+          this.cartCount = this.cart.reduce((s,i)=>s+i.quantity,0);
         }
       }
     });
@@ -128,4 +195,3 @@
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
-

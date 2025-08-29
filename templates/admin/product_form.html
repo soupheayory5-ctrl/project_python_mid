@@ -3,8 +3,87 @@
 {% block title %}{{ 'Edit' if product else 'New' }} Product · Admin{% endblock %}
 
 {% block content %}
-<div class="d-flex align-items-center justify-content-between mb-3">
-  <h1 class="h3 mb-0">{{ 'Edit' if product else 'New' }} Product</h1>
+<style>
+  /* ===== Patterned Background ===== */
+  body {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(59,130,246,.12) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(236,72,153,.12) 0, transparent 40%),
+      repeating-linear-gradient(135deg, #f0f9ff 0 30px, #e0f2fe 30px 60px),
+      linear-gradient(180deg,#ffffff,#f8fafc);
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .page-header h1 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: linear-gradient(90deg,#2563eb,#ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0;
+  }
+
+  .card-form {
+    border-radius: 18px;
+    padding: 28px;
+    background:
+      repeating-linear-gradient(-45deg, rgba(99,102,241,.08) 0 20px, transparent 20px 40px),
+      #fff;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 10px 22px rgba(15,23,42,.08);
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .form-control, textarea {
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    padding: 12px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .form-control:focus, textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37,99,235,.2);
+  }
+
+  .btn-primary {
+    font-weight: 700;
+    border-radius: 12px;
+    background:
+      repeating-linear-gradient(45deg,#3b82f6 0 20px,#2563eb 20px 40px);
+    border: none;
+    padding: 10px 20px;
+    transition: transform .2s ease, filter .2s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    box-shadow: 0 6px 16px rgba(37,99,235,.4);
+  }
+
+  .btn-outline-secondary {
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .alert {
+    border-radius: 12px;
+    font-weight: 500;
+  }
+</style>
+
+<div class="page-header">
+  <h1>{{ 'Edit' if product else 'New' }} Product</h1>
   <a href="{{ url_for('admin.products_index') }}" class="btn btn-outline-secondary">← Back to list</a>
 </div>
 
@@ -19,7 +98,7 @@
   {% endif %}
 {% endwith %}
 
-<form method="post" class="card shadow-sm p-4" novalidate>
+<form method="post" class="card-form" novalidate>
   <div class="row g-3">
     <div class="col-md-8">
       <label class="form-label">Title <span class="text-danger">*</span></label>
@@ -69,4 +148,3 @@
   </div>
 </form>
 {% endblock %}
-

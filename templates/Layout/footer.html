@@ -1,11 +1,10 @@
 <!-- templates/Layout/footer.html -->
-<footer class="pt-5 pb-4 border-top text-light"
-        style="background: linear-gradient(to right, #2c2c2c, #1a1a1a);">
+<footer class="pt-5 pb-4 text-dark patterned-footer">
   <div class="container">
     <div class="row gy-4">
       <!-- About -->
       <div class="col-12 col-md-4">
-        <h5 class="mb-3 fw-semibold" style="color:#f0c040;">About Us</h5>
+        <h5 class="mb-3 fw-bold footer-title"> About Us</h5>
         <p class="mb-0">
           We provide quality products at affordable prices. Shop with confidence and enjoy great deals every day.
         </p>
@@ -13,40 +12,84 @@
 
       <!-- Quick Links -->
       <div class="col-6 col-md-4">
-        <h5 class="mb-3 fw-semibold" style="color:#f0c040;">Quick Links</h5>
+        <h5 class="mb-3 fw-bold footer-title">🔗 Quick Links</h5>
         <ul class="list-unstyled mb-0">
-          <li><a href="/" class="text-decoration-none text-light d-block mb-2 footer-link">Home</a></li>
-          <li><a href="/product" class="text-decoration-none text-light d-block mb-2 footer-link">Products</a></li>
-          <li><a href="/about" class="text-decoration-none text-light d-block mb-2 footer-link">About</a></li>
-          <li><a href="/contact" class="text-decoration-none text-light d-block footer-link">Contact</a></li>
+          <li><a href="/" class="text-decoration-none footer-link d-block mb-2">Home</a></li>
+          <li><a href="/product" class="text-decoration-none footer-link d-block mb-2">Products</a></li>
+          <li><a href="/about" class="text-decoration-none footer-link d-block mb-2">About</a></li>
+          <li><a href="/contact" class="text-decoration-none footer-link d-block">Contact</a></li>
         </ul>
       </div>
 
       <!-- Contact -->
       <div class="col-6 col-md-4">
-        <h5 class="mb-3 fw-semibold" style="color:#f0c040;">Contact Us</h5>
-        <p class="mb-1"><i class="bi bi-telephone-fill me-2"></i> +855 010 989 898</p>
-        <p class="mb-3"><i class="bi bi-envelope-fill me-2"></i> annvireakdevin@gmail.com</p>
+        <h5 class="mb-3 fw-bold footer-title">📞 Contact Us</h5>
+        <p class="mb-1"><i class="bi bi-telephone-fill me-2"></i> +855 010 200 888</p>
+        <p class="mb-3"><i class="bi bi-envelope-fill me-2"></i> soulkh@gmail.com</p>
         <div class="d-flex gap-2">
-          <a href="#" class="btn btn-outline-warning btn-sm rounded-circle" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="btn btn-outline-warning btn-sm rounded-circle" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-          <a href="#" class="btn btn-outline-warning btn-sm rounded-circle" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="btn btn-outline-warning btn-sm rounded-circle" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          <a href="#" class="btn btn-social" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="btn btn-social" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="btn btn-social" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="btn btn-social" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
         </div>
       </div>
     </div>
 
-    <hr class="mt-4 border-warning opacity-50" />
+    <hr class="mt-4 patterned-divider" />
 
-    <div class="text-center small">
-      &copy; 2025 Devin SmatMart. Creating smiles since 2025.
+    <div class="text-center small fw-semibold">
+      &copy; 2025 soul.kh · Since 1999
     </div>
   </div>
 </footer>
 
 <style>
-  /* Subtle hover; does not affect layout */
-  .footer-link:hover { color:#f0c040; text-decoration:underline; }
-  .btn-outline-warning:hover { background-color:#f0c040; color:#1a1a1a; border-color:#f0c040; }
-</style>
+  /* Patterned background for footer */
+  .patterned-footer {
+    background:
+      repeating-linear-gradient(45deg, #fef9c3 0 20px, #fde68a 20px 40px),
+      linear-gradient(to right, #fdf2f8, #e0f2fe);
+    border-top: 4px solid #f59e0b;
+  }
 
+  .footer-title {
+    color: #b91c1c;
+    background: linear-gradient(90deg, #f59e0b, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .footer-link {
+    color: #1e293b;
+    font-weight: 500;
+    transition: color .2s ease, transform .2s ease;
+  }
+  .footer-link:hover {
+    color: #dc2626;
+    transform: translateX(4px);
+  }
+
+  .btn-social {
+    border-radius: 50%;
+    border: 2px solid #f59e0b;
+    color: #b91c1c;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s ease;
+    background: #fff8f1;
+  }
+  .btn-social:hover {
+    background: #f59e0b;
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .patterned-divider {
+    border-top: 2px dashed #f59e0b;
+    opacity: .7;
+  }
+</style>

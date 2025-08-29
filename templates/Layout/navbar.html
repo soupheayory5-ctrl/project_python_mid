@@ -1,25 +1,92 @@
 <!-- templates/Layout/navbar.html -->
-<nav class="navbar navbar-expand-lg shadow-sm" style="background-color: rgba(132,157,220,0.54);">
+<style>
+  /* Navbar – patterned & colorful style */
+  .tt-navbar {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 1030;
+    background:
+      repeating-linear-gradient(45deg, #f0f9ff 0 12px, #e0f2fe 12px 24px),
+      linear-gradient(90deg, #dbeafe, #fef9c3);
+    border-bottom: 2px solid #3b82f6;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  }
+  .tt-navbar .navbar-brand {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1e3a8a !important;
+    letter-spacing: 1px;
+  }
+  .tt-navbar .nav-link {
+    color: #1e293b !important;
+    margin: 0 .4rem;
+    padding: .5rem 1rem !important;
+    border-radius: 12px;
+    transition: background .25s ease, transform .2s ease;
+  }
+  .tt-navbar .nav-link:hover {
+    background: linear-gradient(90deg,#a5b4fc,#f9a8d4);
+    color: #1f2937 !important;
+    transform: translateY(-2px);
+  }
+  /* Move nav items to center, cart floats right */
+  .tt-navbar .navbar-nav {
+    margin: 0 auto; /* center nav links */
+  }
+  /* Cart button */
+  .tt-cart-btn {
+    border: none;
+    border-radius: 30px;
+    padding: .5rem 1rem;
+    font-weight: 600;
+    background: linear-gradient(90deg,#34d399,#3b82f6);
+    color: white;
+    display: inline-flex; align-items: center; gap: .4rem;
+    transition: transform .2s ease, filter .2s ease;
+  }
+  .tt-cart-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+  /* Toggler – custom colorful bars */
+  .navbar-toggler {
+    border: none;
+  }
+  .navbar-toggler-icon {
+    background-image: none;
+    width: 1.5rem; height: 1.5rem; position: relative;
+  }
+  .navbar-toggler-icon::before,
+  .navbar-toggler-icon::after,
+  .navbar-toggler-icon span {
+    content: ""; position: absolute; left: 3px; right: 3px; height: 3px;
+    background: linear-gradient(90deg,#ec4899,#3b82f6);
+    border-radius: 2px;
+  }
+  .navbar-toggler-icon::before { top: 4px; }
+  .navbar-toggler-icon span { top: 10px; }
+  .navbar-toggler-icon::after { top: 16px; }
+</style>
+
+<nav class="navbar navbar-expand-lg tt-navbar">
   <div class="container py-2">
-    <a class="navbar-brand fw-bold fs-3 text-dark" href="/">SUSetec Store</a>
+    <a class="navbar-brand" href="/">Soul.kh</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
             aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"><span></span></span>
     </button>
 
     <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/product">Products</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="/contact">Contact</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="{{ url_for('auth.login') }}">Login</a></li>
-        <li class="nav-item"><a class="nav-link fw-semibold text-dark" style="font-size:17px" href="{{ url_for('auth.logout') }}">Logout</a></li>
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/product">Buy Now</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Admin</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
       </ul>
 
-      <div class="d-flex">
-        <a href="/cart" class="btn btn_cart">
-          <i class="fa-solid fa-cart-plus me-1"></i>
+      <div class="ms-lg-3">
+        <a href="/cart" class="tt-cart-btn btn_cart">
+          <i class="fa-solid fa-cart-plus"></i>
           Cart (<span data-cart-count>0</span>)
         </a>
       </div>
@@ -43,4 +110,3 @@
   window.addEventListener('storage', e => { if (e.key === 'cart_list') render(); });
 })();
 </script>
-
